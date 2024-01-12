@@ -7,6 +7,7 @@ import { Swap as TSwap, IncreasePosition } from "./generated/TethysPerp/TVault";
 import { ONE, ZERO, pow } from "./utils";
 import { AddLiquidity } from "./generated/TethysTLP/TLPManager";
 import { TicketsPurchase } from "./generated/Midas/Midas";
+import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
 
 const DIVIDOR = BigInt.fromI32(2)
 
@@ -152,6 +153,33 @@ export function handleLottery(event: TicketsPurchase): void {
   user.save()
 }
 
+export function handleSub(event: Subscription): void {
+  let userAddress = event.params.user.toHexString()
+  let user = User.load(userAddress)
+
+  if(!user) return
+
+  let leagueSubs = user.leagueSub;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueSubs))
+  user.score = user.score.plus(gain)
+  user.leagueSub = user.leagueSub.plus(ONE)
+
+  user.save()
+}
+
+export function handleBuy(event: Trade): void {
+  let userAddress = event.params.trader.toHexString()
+  let user = User.load(userAddress)
+
+  if(!user) return
+
+  let leagueBuys = user.leagueBuy;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))
+  user.score = user.score.plus(gain)
+  user.leagueBuy = user.leagueBuy.plus(ONE)
+
+  user.save()
+}
 // TODO: add more handlers
 
 // export function handleERC20Approval(event: Approval): void {

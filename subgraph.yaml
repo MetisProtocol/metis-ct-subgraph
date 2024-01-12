@@ -132,3 +132,26 @@ dataSources:
         - event: TicketsPurchase(indexed address,indexed uint256,uint256)
           handler: handleLottery
       file: ./src/listeners.ts 
+
+  - kind: ethereum
+    name: LeagueTech
+    network: metis-sepolia
+    source:
+      abi: LeagueTech
+      address: "0xC22199A042e4c8ad23d24CCdFc58d497FFF7d656"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+      abis:
+        - name: LeagueTech
+          file: ./abis/LeagueTech.json
+      eventHandlers:
+        - event: Subscription(address,address,uint256,uint256,uint256,uint256)
+          handler: handleSub
+        - event: Trade(address,address,bool,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleTrade
+      file: ./src/listeners.ts 

@@ -36,6 +36,9 @@ type User @entity {
   tethysSwap: BigInt!
 
   midasLottery: BigInt!
+
+  leagueSub: BigInt!
+  leagueBuy: BigInt!
 }
 
 type Pair @entity {

@@ -90,3 +90,24 @@ dataSources:
         - event: IncreasePosition(bytes32,address,address,address,uint256,uint256,bool,uint256,uint256)
           handler: handleTethysPerp
       file: ./src/listeners.ts
+
+  - kind: ethereum
+    name: TethysTLP
+    network: metis-sepolia
+    source:
+      abi: TLPManager
+      address: "0x00d4076F294DBc0481A7cD0359BDAF60d61edD53"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+      abis:
+        - name: TLPManager
+          file: ./abis/TLPManager.json
+      eventHandlers:
+        - event: AddLiquidity(address,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleTethysTLP
+      file: ./src/listeners.ts

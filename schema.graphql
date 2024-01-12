@@ -28,8 +28,6 @@ type User @entity {
   score: BigInt!
   actionCount: BigInt!
 
-  claimedTokens: Boolean
-
   netswapSwap: BigInt!
   netswapLp: BigInt!
 

@@ -5,6 +5,7 @@ import { PairCreated } from "./generated/NetSwapNewLp/V2Factory";
 import { Mint, Swap } from "./generated/NetSwapSwap/V2Pair";
 import { Swap as TSwap, IncreasePosition } from "./generated/TethysPerp/TVault";
 import { ONE, ZERO, pow } from "./utils";
+import { AddLiquidity } from "./generated/TethysTLP/TLPManager";
 
 const DIVIDOR = BigInt.fromI32(2)
 
@@ -118,6 +119,20 @@ export function handleTethysPerp(event: IncreasePosition): void {
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysPerpCnt))
   user.score = user.score.plus(gain)
   user.tethysPerp = user.tethysPerp.plus(ONE)
+
+  user.save()
+}
+
+export function handleTethysTLP(event: AddLiquidity): void {
+  let userAddress = event.params.account.toHexString()
+  let user = User.load(userAddress)
+
+  if(!user) return
+
+  let tethysTLPCnt = user.tethysTLP;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysTLPCnt))
+  user.score = user.score.plus(gain)
+  user.tethysTLP = user.tethysTLP.plus(ONE)
 
   user.save()
 }

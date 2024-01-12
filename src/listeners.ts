@@ -6,6 +6,7 @@ import { Mint, Swap } from "./generated/NetSwapSwap/V2Pair";
 import { Swap as TSwap, IncreasePosition } from "./generated/TethysPerp/TVault";
 import { ONE, ZERO, pow } from "./utils";
 import { AddLiquidity } from "./generated/TethysTLP/TLPManager";
+import { TicketsPurchase } from "./generated/Midas/Midas";
 
 const DIVIDOR = BigInt.fromI32(2)
 
@@ -137,6 +138,19 @@ export function handleTethysTLP(event: AddLiquidity): void {
   user.save()
 }
 
+export function handleLottery(event: TicketsPurchase): void {
+  let userAddress = event.params.buyer.toHexString()
+  let user = User.load(userAddress)
+
+  if(!user) return
+
+  let lotterCnt = user.midasLottery;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, lotterCnt))
+  user.score = user.score.plus(gain)
+  user.midasLottery = user.midasLottery.plus(ONE)
+
+  user.save()
+}
 
 // TODO: add more handlers
 

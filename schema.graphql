@@ -1,22 +1,46 @@
-enum TokenType {
-  ERC20
-  ERC721
-  ERC1155
+# enum ActionType {
+#   CLAIMED_TOKENS
+
+#   TETHYS_SWAP
+#   TETHYS_PERP
+#   TETHYS_TLP
+
+#   HUMMUS_SWAP
+#   HUMMUS_LP
+
+#   NETSWAP_SWAP
+#   NETSWAP_LP
+
+#   LEAGUE_TRADE_SHARES
+#   LEAGUE_BUY_SUB
+
+#   MIDAS_LOTTERY
+# }
+
+type User @entity {
+  "user address"
+  id: ID!
+
+  dateJoined: BigInt!
+  blockJoined: BigInt!
+  joinId: BigInt!
+
+  score: BigInt!
+  actionCount: BigInt!
+
+  claimedTokens: Boolean
+
+  netswapSwap: BigInt!
+  netswapLp: BigInt!
+
+  tethysPerp: BigInt!
+  tethysTLP: BigInt!
+  tethysSwap: BigInt!
 }
 
-type Token @entity {
-  "token address"
+type Pair @entity {
+  "pair address"
   id: ID!
-  symbol: String!
-  type: TokenType!
-}
 
-type Approved @entity {
-  id: ID!
-  token: Token!
-  owner: Bytes!
-  spender: Bytes!
-  Amount: BigInt!
-  IsAll: Boolean!
-  UpdatedAt: BigInt!
+  factory: Bytes!
 }

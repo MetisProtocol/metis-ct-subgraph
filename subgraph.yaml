@@ -1,47 +1,92 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 description: Token approve list
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: ERC20Approve
-    network: andromeda
+    name: TokensDistributed
+    network: metis-sepolia
     source:
-      abi: ERC20
+      abi: TokenDistributor
       startBlock: 0
+      address: "0x4aC2Fe67f0ec5744ee17469BCCcd4C4E81D62f0A"
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Token
-        - Approved
+        - User
       abis:
-        - name: ERC20
-          file: ./abis/ERC20.json
+        - name: TokenDistributor
+          file: ./abis/TokenDistributor.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleERC20Approval
-      file: ./src/ERC20.ts
+        - event: TokensDistributed(indexed address,uint256)
+          handler: handleTokensDistributed
+      file: ./src/listeners.ts
+
   - kind: ethereum
-    name: ERC721Approve
-    network: andromeda
+    name: NetSwapNewLp
+    network: metis-sepolia
     source:
-      abi: ERC721
+      abi: V2Factory
+      startBlock: 0
+      address: "0x5A9D3157c6818C0f2A4D8Dd44769BB7f1173B5Da"
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Pair
+      abis:
+        - name: V2Factory
+          file: ./abis/V2Factory.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: handlePairCreated
+      file: ./src/listeners.ts
+
+  - kind: ethereum
+    name: NetSwapSwap
+    network: metis-sepolia
+    source:
+      abi: V2Pair
       startBlock: 0
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Token
-        - Approved
+        - User
+        - Pair
       abis:
-        - name: ERC721
-          file: ./abis/ERC721.json
+        - name: V2Pair
+          file: ./abis/V2Pair.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleERC721Approval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-      file: ./src/ERC721.ts
+        - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
+          handler: handleNetswapSwap
+        - event: Mint(indexed address,uint256,uint256)
+          handler: handleNetswapLiquidity
+      file: ./src/listeners.ts
+
+  - kind: ethereum
+    name: TethysPerp
+    network: metis-sepolia
+    source:
+      abi: TVault
+      address: "0x1929f25c24D187aA40496cf4A3C7DE10E3f95A6A"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+      abis:
+        - name: TVault
+          file: ./abis/TVault.json
+      eventHandlers:
+        - event: Swap(address,address,address,uint256,uint256,uint256,uint256)
+          handler: handleTethysSwap
+        - event: IncreasePosition(bytes32,address,address,address,uint256,uint256,bool,uint256,uint256)
+          handler: handleTethysPerp
+      file: ./src/listeners.ts

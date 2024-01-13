@@ -23,7 +23,7 @@ type User @entity {
 
   dateJoined: BigInt!
   blockJoined: BigInt!
-  joinId: BigInt!
+  joinId: BigInt
 
   score: BigInt!
   actionCount: BigInt!

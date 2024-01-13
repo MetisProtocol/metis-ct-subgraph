@@ -4,7 +4,7 @@ import { Pair, User } from "./generated/schema";
 import { PairCreated } from "./generated/NetSwapNewLp/V2Factory";
 import { Mint, Swap } from "./generated/NetSwapSwap/V2Pair";
 import { Swap as TSwap, IncreasePosition } from "./generated/TethysPerp/TVault";
-import { ONE, ZERO, pow } from "./utils";
+import { ONE, ZERO, getOrCreateUser, pow } from "./utils";
 import { AddLiquidity } from "./generated/TethysTLP/TLPManager";
 import { TicketsPurchase } from "./generated/Midas/Midas";
 import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
@@ -12,39 +12,18 @@ import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
 const DIVIDOR = BigInt.fromI32(2)
 
 export function handleTokensDistributed(event: TokensDistributed): void {
-  let userAddress = event.params.user;
+  let userAddress = event.params.user.toHexString();
   let recipientId = event.params.id;
 
-  let user = User.load(userAddress.toHexString());
+  let user = getOrCreateUser(userAddress, event.block);
 
-  if(user){
-    // User can't claim more than once, this might be a mistake
-    return
-  }
-
-  if(!user) {
-    user = new User(userAddress.toHexString());
-    user.actionCount = ZERO
-    user.dateJoined = event.block.timestamp;
-    user.blockJoined = event.block.number;
-
+  if(!user.joinId){
     user.joinId = recipientId;
-    user.score = ZERO;
-    user.actionCount = ZERO;
-
-    user.netswapSwap = ZERO
-    user.netswapLp = ZERO
+    user.score = user.score.plus(BigInt.fromI64(500));
+    user.actionCount = user.actionCount.plus(BigInt.fromI64(1));
   
-    user.tethysPerp = ZERO
-    user.tethysTLP = ZERO
-    user.tethysSwap = ZERO
+    user.save()
   }
-
-  // TODO: change here;
-  user.score = user.score.plus(BigInt.fromI64(500));
-  user.actionCount = user.actionCount.plus(BigInt.fromI64(1));
-
-  user.save()
 }
 
 export function handlePairCreated(event: PairCreated): void {
@@ -66,14 +45,12 @@ export function handleNetswapSwap(event: Swap): void {
   if(!pair) return
 
   let userAddress = event.params.sender.toHexString()
-  let user = User.load(userAddress)
+  let user = getOrCreateUser(userAddress, event.block)
 
-  if(!user) return
-
-  let netswapSwapCnt = user.netswapLp;
+  let netswapSwapCnt = user.netswapSwap;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, netswapSwapCnt))
   user.score = user.score.plus(gain)
-  user.netswapSwap = user.netswapLp.plus(ONE)
+  user.netswapSwap = user.netswapSwap.plus(ONE)
 
   user.save()
 }
@@ -85,23 +62,19 @@ export function handleNetswapLiquidity(event: Mint): void {
   if(!pair) return
 
   let userAddress = event.params.sender.toHexString()
-  let user = User.load(userAddress)
+  let user = getOrCreateUser(userAddress, event.block)
 
-  if(!user) return
-
-  let netswapLpCnt = user.netswapSwap;
+  let netswapLpCnt = user.netswapLp;
   let gain = BigInt.fromI64(500).div(pow(DIVIDOR, netswapLpCnt))
   user.score = user.score.plus(gain)
-  user.netswapSwap = user.netswapSwap.plus(ONE)
+  user.netswapLp = user.netswapLp.plus(ONE)
 
   user.save()
 }
 
 export function handleTethysSwap(event: TSwap): void {
   let userAddress = event.params.account.toHexString()
-  let user = User.load(userAddress)
-
-  if(!user) return
+  let user = getOrCreateUser(userAddress, event.block)
 
   let tethysSwapCnt = user.tethysSwap;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysSwapCnt))
@@ -113,9 +86,7 @@ export function handleTethysSwap(event: TSwap): void {
 
 export function handleTethysPerp(event: IncreasePosition): void {
   let userAddress = event.params.account.toHexString()
-  let user = User.load(userAddress)
-
-  if(!user) return
+  let user = getOrCreateUser(userAddress, event.block)
 
   let tethysPerpCnt = user.tethysPerp;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysPerpCnt))
@@ -127,9 +98,7 @@ export function handleTethysPerp(event: IncreasePosition): void {
 
 export function handleTethysTLP(event: AddLiquidity): void {
   let userAddress = event.params.account.toHexString()
-  let user = User.load(userAddress)
-
-  if(!user) return
+  let user = getOrCreateUser(userAddress, event.block)
 
   let tethysTLPCnt = user.tethysTLP;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysTLPCnt))
@@ -141,9 +110,7 @@ export function handleTethysTLP(event: AddLiquidity): void {
 
 export function handleLottery(event: TicketsPurchase): void {
   let userAddress = event.params.buyer.toHexString()
-  let user = User.load(userAddress)
-
-  if(!user) return
+  let user = getOrCreateUser(userAddress, event.block)
 
   let lotterCnt = user.midasLottery;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, lotterCnt))
@@ -155,9 +122,7 @@ export function handleLottery(event: TicketsPurchase): void {
 
 export function handleSub(event: Subscription): void {
   let userAddress = event.params.user.toHexString()
-  let user = User.load(userAddress)
-
-  if(!user) return
+  let user = getOrCreateUser(userAddress, event.block)
 
   let leagueSubs = user.leagueSub;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueSubs))
@@ -169,9 +134,7 @@ export function handleSub(event: Subscription): void {
 
 export function handleBuy(event: Trade): void {
   let userAddress = event.params.trader.toHexString()
-  let user = User.load(userAddress)
-
-  if(!user) return
+  let user = getOrCreateUser(userAddress, event.block)
 
   let leagueBuys = user.leagueBuy;
   let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))

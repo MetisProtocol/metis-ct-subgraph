@@ -25,7 +25,7 @@ export function handleTokensDistributed(event: TokensDistributed): void {
   if(!user) {
     user = new User(userAddress.toHexString());
     user.actionCount = ZERO
-    user.dateJoined = BigInt.fromI64(Date.now());
+    user.dateJoined = event.block.timestamp;
     user.blockJoined = event.block.number;
 
     user.joinId = recipientId;
@@ -180,46 +180,4 @@ export function handleBuy(event: Trade): void {
 
   user.save()
 }
-// TODO: add more handlers
-
-// export function handleERC20Approval(event: Approval): void {
-//   let token = Token.load(event.address.toHex());
-//   if (!token) {
-//     token = new Token(event.address.toHex());
-
-//     let callResult = ERC20.bind(event.address).try_symbol();
-//     if (callResult.reverted) {
-//       log.info("get token {} symbol reverted", [event.address.toHex()]);
-//       token.symbol = "Unknown Token";
-//     } else {
-//       token.symbol = callResult.value;
-//     }
-
-//     token.type = "ERC20";
-//     token.save();
-//   }
-
-//   const approveId = `ERC20Approve-${event.address.toHex()}-${event.params.owner}-${
-//     event.params.spender
-//   }`;
-
-//   let approve = Approved.load(approveId);
-//   if (event.params.value.equals(BigInt.fromU32(0))) {
-//     if (approve) {
-//       store.remove("Approved", approveId);
-//     }
-//     return;
-//   }
-
-//   if (!approve) {
-//     approve = new Approved(approveId);
-//     approve.token = token.id;
-//     approve.owner = event.params.owner;
-//     approve.spender = event.params.spender;
-//     approve.IsAll = false;
-//   }
-
-//   approve.Amount = event.params.value;
-//   approve.UpdatedAt = event.block.timestamp;
-//   approve.save();
-// }
+// TODO: add hummus

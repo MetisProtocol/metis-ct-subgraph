@@ -9,7 +9,7 @@ dataSources:
     source:
       abi: TokenDistributor
       startBlock: 0
-      address: "0x4aC2Fe67f0ec5744ee17469BCCcd4C4E81D62f0A"
+      address: "0x4E6D07bCF5586BC1eC0d3F066D1F795aFd26bD96"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

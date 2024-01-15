@@ -155,3 +155,72 @@ dataSources:
         - event: Trade(address,address,bool,uint256,uint256,uint256,uint256,uint256,uint256)
           handler: handleTrade
       file: ./src/listeners.ts 
+  ## Hummus
+  - kind: ethereum
+    name: Hummus
+    network: metis-sepolia
+    source:
+      abi: HummusPool
+      address: "0x2f895C24ee749A9dC7e66c3355093E2440d5aAe1"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+      abis:
+        - name: HummusPool
+          file: ./abis/HummusPool.json
+      eventHandlers:
+        - event: Swap(indexed address,address,address,uint256,uint256,indexed address)
+          handler: handleHummusSwap
+        - event: Deposit(indexed address,address,uint256,uint256,indexed address)
+          handler: handleHummusLp
+      file: ./src/listeners.ts
+  
+  - kind: ethereum
+    name: HummusMAI
+    network: metis-sepolia
+    source:
+      abi: HummusPool
+      address: "0x57e1228Cc8fBcAF0F1288AaDDe228f491d8470e6"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+      abis:
+        - name: HummusPool
+          file: ./abis/HummusPool.json
+      eventHandlers:
+        - event: Swap(indexed address,address,address,uint256,uint256,indexed address)
+          handler: handleHummusSwap
+        - event: Deposit(indexed address,address,uint256,uint256,indexed address)
+          handler: handleHummusLp
+      file: ./src/listeners.ts
+  
+  - kind: ethereum
+    name: HummusVault
+    network: metis-sepolia
+    source:
+      abi: HummusVault
+      address: "0x277e335f41821CF8E5cc647Bab25B83075B837e7"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+      abis:
+        - name: HummusVault
+          file: ./abis/HummusVault.json
+      eventHandlers:
+        - event: Swap(indexed bytes32,indexed address,indexed address,uint256,uint256)
+          handler: handleHummusVaultSwap
+        - event: PoolBalanceChanged(indexed bytes32,indexed address,address[],int256[],uint256[])
+          handler: handleHummusVaultLp
+      file: ./src/listeners.ts

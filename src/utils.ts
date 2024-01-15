@@ -41,6 +41,9 @@ export function getOrCreateUser(address: string, block: ethereum.Block) : User {
         user.midasLottery = ZERO
         user.leagueBuy = ZERO
         user.leagueSub = ZERO
+
+        user.hummusSwap = ZERO
+        user.hummusLp = ZERO
     }
     return user;
 }

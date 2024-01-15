@@ -39,6 +39,9 @@ type User @entity {
 
   leagueSub: BigInt!
   leagueBuy: BigInt!
+
+  hummusSwap: BigInt!
+  hummusLp: BigInt!
 }
 
 type Pair @entity {

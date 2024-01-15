@@ -150,10 +150,10 @@ export function handleHummusSwap(event: SwapHummusPool): void {
   let userAddress = event.transaction.from.toHexString()
   let user = getOrCreateUser(userAddress, event.block)
 
-  let leagueBuys = user.leagueBuy;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))
+  let humSwaps = user.hummusSwap;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, humSwaps))
   user.score = user.score.plus(gain)
-  user.leagueBuy = user.leagueBuy.plus(ONE)
+  user.hummusSwap = user.hummusSwap.plus(ONE)
 
   user.save()
 }
@@ -161,10 +161,10 @@ export function handleHummusLp(event: Deposit): void {
   let userAddress = event.transaction.from.toHexString()
   let user = getOrCreateUser(userAddress, event.block)
 
-  let leagueBuys = user.leagueBuy;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))
+  let hummusLp = user.hummusLp;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, hummusLp))
   user.score = user.score.plus(gain)
-  user.leagueBuy = user.leagueBuy.plus(ONE)
+  user.hummusLp = user.hummusLp.plus(ONE)
 
   user.save()
 }
@@ -172,10 +172,10 @@ export function handleHummusVaultSwap(event: SwapHummusVault): void {
   let userAddress = event.transaction.from.toHexString()
   let user = getOrCreateUser(userAddress, event.block)
 
-  let leagueBuys = user.leagueBuy;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))
+  let humSwaps = user.hummusSwap;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, humSwaps))
   user.score = user.score.plus(gain)
-  user.leagueBuy = user.leagueBuy.plus(ONE)
+  user.hummusSwap = user.hummusSwap.plus(ONE)
 
   user.save()
 }
@@ -183,10 +183,10 @@ export function handleHummusVaultLp(event: PoolBalanceChanged): void {
   let userAddress = event.transaction.from.toHexString()
   let user = getOrCreateUser(userAddress, event.block)
 
-  let leagueBuys = user.leagueBuy;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))
+  let hummusLp = user.hummusLp;
+  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, hummusLp))
   user.score = user.score.plus(gain)
-  user.leagueBuy = user.leagueBuy.plus(ONE)
+  user.hummusLp = user.hummusLp.plus(ONE)
 
   user.save()
 }

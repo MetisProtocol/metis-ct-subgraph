@@ -44,7 +44,7 @@ export function handleNetswapSwap(event: Swap): void {
 
   if(!pair) return
 
-  let userAddress = event.params.sender.toHexString()
+  let userAddress = event.transaction.from.toHexString()
   let user = getOrCreateUser(userAddress, event.block)
 
   let netswapSwapCnt = user.netswapSwap;
@@ -61,7 +61,7 @@ export function handleNetswapLiquidity(event: Mint): void {
 
   if(!pair) return
 
-  let userAddress = event.params.sender.toHexString()
+  let userAddress = event.transaction.from.toHexString()
   let user = getOrCreateUser(userAddress, event.block)
 
   let netswapLpCnt = user.netswapLp;

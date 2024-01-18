@@ -11,7 +11,8 @@ import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
 import { Swap as SwapHummusVault, PoolBalanceChanged } from "./generated/HummusVault/HummusVault";
 import { Swap as SwapHummusPool, Deposit } from "./generated/Hummus/HummusPool";
 
-const DIVIDOR = BigInt.fromI32(2)
+const DIVIDOR = BigInt.fromI32(4)
+const MULTIPLIER = BigInt.fromI32(3)
 
 export function handleTokensDistributed(event: TokensDistributed): void {
   let userAddress = event.params.user.toHexString();
@@ -50,7 +51,7 @@ export function handleNetswapSwap(event: Swap): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let netswapSwapCnt = user.netswapSwap;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, netswapSwapCnt))
+  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, netswapSwapCnt)).div(pow(DIVIDOR, netswapSwapCnt))
   user.score = user.score.plus(gain)
   user.netswapSwap = user.netswapSwap.plus(ONE)
 
@@ -67,7 +68,7 @@ export function handleNetswapLiquidity(event: Mint): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let netswapLpCnt = user.netswapLp;
-  let gain = BigInt.fromI64(500).div(pow(DIVIDOR, netswapLpCnt))
+  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, netswapLpCnt)).div(pow(DIVIDOR, netswapLpCnt))
   user.score = user.score.plus(gain)
   user.netswapLp = user.netswapLp.plus(ONE)
 
@@ -79,7 +80,7 @@ export function handleTethysSwap(event: TSwap): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let tethysSwapCnt = user.tethysSwap;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysSwapCnt))
+  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, tethysSwapCnt)).div(pow(DIVIDOR, tethysSwapCnt))
   user.score = user.score.plus(gain)
   user.tethysSwap = user.tethysSwap.plus(ONE)
 
@@ -91,7 +92,7 @@ export function handleTethysPerp(event: IncreasePosition): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let tethysPerpCnt = user.tethysPerp;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysPerpCnt))
+  let gain = BigInt.fromI64(400).times(pow(MULTIPLIER, tethysPerpCnt)).div(pow(DIVIDOR, tethysPerpCnt))
   user.score = user.score.plus(gain)
   user.tethysPerp = user.tethysPerp.plus(ONE)
 
@@ -103,7 +104,7 @@ export function handleTethysTLP(event: AddLiquidity): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let tethysTLPCnt = user.tethysTLP;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, tethysTLPCnt))
+  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, tethysTLPCnt)).div(pow(DIVIDOR, tethysTLPCnt))
   user.score = user.score.plus(gain)
   user.tethysTLP = user.tethysTLP.plus(ONE)
 
@@ -115,7 +116,7 @@ export function handleLottery(event: TicketsPurchase): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let lotterCnt = user.midasLottery;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, lotterCnt))
+  let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, lotterCnt)).div(pow(DIVIDOR, lotterCnt))
   user.score = user.score.plus(gain)
   user.midasLottery = user.midasLottery.plus(ONE)
 
@@ -127,7 +128,7 @@ export function handleSub(event: Subscription): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let leagueSubs = user.leagueSub;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueSubs))
+  let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, leagueSubs)).div(pow(DIVIDOR, leagueSubs))
   user.score = user.score.plus(gain)
   user.leagueSub = user.leagueSub.plus(ONE)
 
@@ -139,7 +140,7 @@ export function handleBuy(event: Trade): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let leagueBuys = user.leagueBuy;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, leagueBuys))
+  let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, leagueBuys)).div(pow(DIVIDOR, leagueBuys))
   user.score = user.score.plus(gain)
   user.leagueBuy = user.leagueBuy.plus(ONE)
 
@@ -151,7 +152,7 @@ export function handleHummusSwap(event: SwapHummusPool): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let humSwaps = user.hummusSwap;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, humSwaps))
+  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, humSwaps)).div(pow(DIVIDOR, humSwaps))
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
 
@@ -162,7 +163,7 @@ export function handleHummusLp(event: Deposit): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let hummusLp = user.hummusLp;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, hummusLp))
+  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, hummusLp)).div(pow(DIVIDOR, hummusLp))
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
 
@@ -173,7 +174,7 @@ export function handleHummusVaultSwap(event: SwapHummusVault): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let humSwaps = user.hummusSwap;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, humSwaps))
+  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, humSwaps)).div(pow(DIVIDOR, humSwaps))
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
 
@@ -184,7 +185,7 @@ export function handleHummusVaultLp(event: PoolBalanceChanged): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let hummusLp = user.hummusLp;
-  let gain = BigInt.fromI64(300).div(pow(DIVIDOR, hummusLp))
+  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, hummusLp)).div(pow(DIVIDOR, hummusLp))
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
 

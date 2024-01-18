@@ -16,6 +16,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: TokenDistributor
           file: ./abis/TokenDistributor.json
@@ -58,6 +59,7 @@ dataSources:
       entities:
         - User
         - Pair
+        - System
       abis:
         - name: V2Pair
           file: ./abis/V2Pair.json
@@ -81,6 +83,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: TVault
           file: ./abis/TVault.json
@@ -104,6 +107,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: TLPManager
           file: ./abis/TLPManager.json
@@ -125,6 +129,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: Midas
           file: ./abis/Midas.json
@@ -146,6 +151,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: LeagueTech
           file: ./abis/LeagueTech.json
@@ -169,6 +175,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: HummusPool
           file: ./abis/HummusPool.json
@@ -192,6 +199,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: HummusPool
           file: ./abis/HummusPool.json
@@ -215,6 +223,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - User
+        - System
       abis:
         - name: HummusVault
           file: ./abis/HummusVault.json

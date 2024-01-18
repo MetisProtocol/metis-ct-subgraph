@@ -1,10 +1,10 @@
-import { BigInt, store, log, Address } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { TokensDistributed } from "./generated/TokensDistributed/TokenDistributor";
-import { Pair, User } from "./generated/schema";
+import { Pair } from "./generated/schema";
 import { PairCreated } from "./generated/NetSwapNewLp/V2Factory";
 import { Mint, Swap } from "./generated/NetSwapSwap/V2Pair";
 import { Swap as TSwap, IncreasePosition } from "./generated/TethysPerp/TVault";
-import { ONE, ZERO, getOrCreateUser, pow } from "./utils";
+import { ONE, getOrCreateUser, pow, updateSys } from "./utils";
 import { AddLiquidity } from "./generated/TethysTLP/TLPManager";
 import { TicketsPurchase } from "./generated/Midas/Midas";
 import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
@@ -23,7 +23,9 @@ export function handleTokensDistributed(event: TokensDistributed): void {
   if(!user.joinId){
     user.joinId = recipientId;
     user.score = user.score.plus(BigInt.fromI64(500));
-    user.actionCount = user.actionCount.plus(BigInt.fromI64(1));
+    user.actionCount = user.actionCount.plus(ONE);
+  
+    updateSys("tokensDistributed", BigInt.fromI64(500))
   
     user.save()
   }
@@ -54,6 +56,8 @@ export function handleNetswapSwap(event: Swap): void {
   let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, netswapSwapCnt)).div(pow(DIVIDOR, netswapSwapCnt))
   user.score = user.score.plus(gain)
   user.netswapSwap = user.netswapSwap.plus(ONE)
+    
+  updateSys("netswapSwap", gain)
 
   user.save()
 }
@@ -72,6 +76,8 @@ export function handleNetswapLiquidity(event: Mint): void {
   user.score = user.score.plus(gain)
   user.netswapLp = user.netswapLp.plus(ONE)
 
+  updateSys("netswapLp", gain)
+
   user.save()
 }
 
@@ -83,6 +89,8 @@ export function handleTethysSwap(event: TSwap): void {
   let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, tethysSwapCnt)).div(pow(DIVIDOR, tethysSwapCnt))
   user.score = user.score.plus(gain)
   user.tethysSwap = user.tethysSwap.plus(ONE)
+  
+  updateSys("tethysSwap", gain)
 
   user.save()
 }
@@ -96,6 +104,8 @@ export function handleTethysPerp(event: IncreasePosition): void {
   user.score = user.score.plus(gain)
   user.tethysPerp = user.tethysPerp.plus(ONE)
 
+  updateSys("tethysPerp", gain)
+
   user.save()
 }
 
@@ -108,6 +118,8 @@ export function handleTethysTLP(event: AddLiquidity): void {
   user.score = user.score.plus(gain)
   user.tethysTLP = user.tethysTLP.plus(ONE)
 
+  updateSys("tethysTLP", gain)
+
   user.save()
 }
 
@@ -119,6 +131,8 @@ export function handleLottery(event: TicketsPurchase): void {
   let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, lotterCnt)).div(pow(DIVIDOR, lotterCnt))
   user.score = user.score.plus(gain)
   user.midasLottery = user.midasLottery.plus(ONE)
+  
+  updateSys("midasLottery", gain)
 
   user.save()
 }
@@ -132,6 +146,8 @@ export function handleSub(event: Subscription): void {
   user.score = user.score.plus(gain)
   user.leagueSub = user.leagueSub.plus(ONE)
 
+  updateSys("leagueSub", gain)
+
   user.save()
 }
 
@@ -143,6 +159,7 @@ export function handleBuy(event: Trade): void {
   let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, leagueBuys)).div(pow(DIVIDOR, leagueBuys))
   user.score = user.score.plus(gain)
   user.leagueBuy = user.leagueBuy.plus(ONE)
+  updateSys("leagueBuy", gain)
 
   user.save()
 }
@@ -155,6 +172,7 @@ export function handleHummusSwap(event: SwapHummusPool): void {
   let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, humSwaps)).div(pow(DIVIDOR, humSwaps))
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
+  updateSys("hummusSwap", gain)
 
   user.save()
 }
@@ -166,6 +184,7 @@ export function handleHummusLp(event: Deposit): void {
   let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, hummusLp)).div(pow(DIVIDOR, hummusLp))
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
+  updateSys("hummusLp", gain)
 
   user.save()
 }
@@ -177,6 +196,7 @@ export function handleHummusVaultSwap(event: SwapHummusVault): void {
   let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, humSwaps)).div(pow(DIVIDOR, humSwaps))
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
+  updateSys("hummusSwap", gain)
 
   user.save()
 }
@@ -188,6 +208,7 @@ export function handleHummusVaultLp(event: PoolBalanceChanged): void {
   let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, hummusLp)).div(pow(DIVIDOR, hummusLp))
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
+  updateSys("hummusLp", gain)
 
   user.save()
 }

@@ -50,3 +50,29 @@ type Pair @entity {
 
   factory: Bytes!
 }
+
+type System @entity {
+  "SYSTEM"
+  id: ID!
+
+  usersCount: BigInt!
+  
+  pointsEarned: BigInt!
+  actionCount: BigInt!
+
+  tokensDistributed: BigInt!
+  netswapSwap: BigInt!
+  netswapLp: BigInt!
+
+  tethysPerp: BigInt!
+  tethysTLP: BigInt!
+  tethysSwap: BigInt!
+
+  midasLottery: BigInt!
+
+  leagueSub: BigInt!
+  leagueBuy: BigInt!
+
+  hummusSwap: BigInt!
+  hummusLp: BigInt!
+}

@@ -121,7 +121,7 @@ dataSources:
     network: metis-sepolia
     source:
       abi: Midas
-      address: "0xb291Ee03F0020EF4F932c556cb659041900B8567"
+      address: "0x193dCaB7Fb2e0E35972764FFcaf4Cf0aa1dc6CA9"
       startBlock: 0
     mapping:
       kind: ethereum/events

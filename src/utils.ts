@@ -47,6 +47,13 @@ export function getOrCreateUser(address: string, block: ethereum.Block) : User {
 
         user.hummusSwap = ZERO
         user.hummusLp = ZERO
+
+        user.spins = ZERO
+        user.spinPointsEarned = ZERO
+        user.spinTokensEarned = ZERO
+        user.spinsBought = ZERO
+      
+        user.adminPointsAdded = ZERO
     }
     return user;
 }
@@ -74,7 +81,11 @@ export function getOrCreateSystem() : System {
         sys.leagueSub = ZERO
 
         sys.hummusSwap = ZERO
-        sys.hummusLp = ZERO 
+        sys.hummusLp = ZERO
+
+        sys.spins = ZERO
+        sys.spinsBought = ZERO
+        sys.adminPointsAdded = ZERO
     }
 
     return sys;

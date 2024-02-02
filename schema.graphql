@@ -42,6 +42,13 @@ type User @entity {
 
   hummusSwap: BigInt!
   hummusLp: BigInt!
+
+  spins: BigInt!
+  spinPointsEarned: BigInt!
+  spinTokensEarned: BigInt!
+  spinsBought: BigInt!
+
+  adminPointsAdded: BigInt!
 }
 
 type Pair @entity {
@@ -75,4 +82,8 @@ type System @entity {
 
   hummusSwap: BigInt!
   hummusLp: BigInt!
+
+  spins: BigInt!
+  spinsBought: BigInt!
+  adminPointsAdded: BigInt!
 }

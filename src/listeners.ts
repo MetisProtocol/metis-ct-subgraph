@@ -10,6 +10,7 @@ import { TicketsPurchase } from "./generated/Midas/Midas";
 import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
 import { Swap as SwapHummusVault, PoolBalanceChanged } from "./generated/HummusVault/HummusVault";
 import { Swap as SwapHummusPool, Deposit } from "./generated/Hummus/HummusPool";
+import { AddPointsCall, AddPointsSingleCall, SpinsBought, WheelSpin } from "./generated/ScoreKeeper/ScoreKeeper";
 
 const DIVIDOR = BigInt.fromI32(4)
 const MULTIPLIER = BigInt.fromI32(3)
@@ -211,4 +212,65 @@ export function handleHummusVaultLp(event: PoolBalanceChanged): void {
   updateSys("hummusLp", gain)
 
   user.save()
+}
+
+export function handleWheelSpin(event: WheelSpin): void {
+  let userAddress = event.params.user.toHexString()
+  
+  let points = event.params.pointsAdded
+  let tokens = event.params.tokensAdded
+
+  let user = getOrCreateUser(userAddress, event.block)
+
+  user.score = user.score.plus(points)
+  user.spinPointsEarned = user.spinPointsEarned.plus(points)
+  user.spinTokensEarned = user.spinTokensEarned.plus(tokens)
+
+  user.spins = user.spins.plus(ONE)
+  updateSys("spins", points)
+
+  user.save()
+}
+
+export function handleBoughtSpins(event: SpinsBought): void {
+  let userAddress = event.params.user.toHexString();
+  let user = getOrCreateUser(userAddress, event.block)
+
+  let spinsBought = user.spinsBought;
+  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, spinsBought)).div(pow(DIVIDOR, spinsBought))
+  user.score = user.score.plus(gain)
+  user.spinsBought = user.spinsBought.plus(ONE)
+  updateSys("spinsBought", gain)
+
+  user.save()
+}
+
+export function handleAddManyPoints(call: AddPointsCall): void {
+  let addresses = call.inputs.addresses
+  let points = call.inputs.points
+
+  for(let i = 0 ; i<addresses.length ; i++) {
+    let userAddress = addresses[i].toHexString()
+    let user = getOrCreateUser(userAddress, call.block)
+    user.score = user.score.plus(points[i])
+    user.adminPointsAdded = user.adminPointsAdded.plus(points[i])
+    updateSys("adminPointsAdded", points[i])
+
+    user.save()
+  }
+}
+
+export function handleAddPoints(call: AddPointsSingleCall): void {
+  let addresses = call.inputs.addresses
+  let points = call.inputs.points
+
+  for(let i = 0 ; i<addresses.length ; i++) {
+    let userAddress = addresses[i].toHexString()
+    let user = getOrCreateUser(userAddress, call.block)
+    user.score = user.score.plus(points)
+    user.adminPointsAdded = user.adminPointsAdded.plus(points)
+    updateSys("adminPointsAdded", points)
+
+    user.save()
+  }
 }

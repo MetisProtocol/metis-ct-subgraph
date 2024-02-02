@@ -122,7 +122,7 @@ dataSources:
     source:
       abi: Midas
       address: "0x193dCaB7Fb2e0E35972764FFcaf4Cf0aa1dc6CA9"
-      startBlock: 0
+      startBlock: 2873857
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -253,4 +253,33 @@ dataSources:
           handler: handleHummusVaultSwap
         - event: PoolBalanceChanged(indexed bytes32,indexed address,address[],int256[],uint256[])
           handler: handleHummusVaultLp
+      file: ./src/listeners.ts
+
+  - kind: ethereum
+    name: ScoreKeeper
+    network: metis-sepolia
+    source:
+      abi: ScoreKeeper
+      address: "0xb5385bEfdB12A3c70e3D5Be90A51d5b5d9C18479"
+      startBlock: 4001848
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - System
+      abis:
+        - name: ScoreKeeper
+          file: ./abis/ScoreKeeper.json
+      eventHandlers:
+        - event: WheelSpin(indexed address,uint256,uint256,uint256)
+          handler: handleWheelSpin
+        - event: SpinsBought(indexed address,uint256)
+          handler: handleBoughtSpins
+      callHandlers:
+        - function: addPoints(address[],uint256[])
+          handler: handleAddManyPoints
+        - function: addPointsSingle(address[],uint256)
+          handler: handleAddPoints
       file: ./src/listeners.ts

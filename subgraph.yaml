@@ -137,6 +137,27 @@ dataSources:
         - event: TicketsPurchase(indexed address,indexed uint256,uint256)
           handler: handleLottery
       file: ./src/listeners.ts 
+  - kind: ethereum
+    name: MidasOld
+    network: metis-sepolia
+    source:
+      abi: Midas
+      address: "0xb291Ee03F0020EF4F932c556cb659041900B8567"
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - System
+      abis:
+        - name: Midas
+          file: ./abis/Midas.json
+      eventHandlers:
+        - event: TicketsPurchase(indexed address,indexed uint256,uint256)
+          handler: handleLottery
+      file: ./src/listeners.ts 
 
   - kind: ethereum
     name: LeagueTech

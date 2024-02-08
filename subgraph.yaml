@@ -277,9 +277,120 @@ dataSources:
           handler: handleWheelSpin
         - event: SpinsBought(indexed address,uint256)
           handler: handleBoughtSpins
-      callHandlers:
-        - function: addPoints(address[],uint256[])
-          handler: handleAddManyPoints
-        - function: addPointsSingle(address[],uint256)
-          handler: handleAddPoints
+      # callHandlers:
+      #   - function: addPoints(address[],uint256[])
+      #     handler: handleAddManyPoints
+      #   - function: addPointsSingle(address[],uint256)
+      #     handler: handleAddPoints
       file: ./src/listeners.ts
+
+
+  - kind: ethereum/contract
+    name: eMetisMint
+    network: "metis-sepolia"
+    source:
+      address: "0xDF5b62fa100b5f67C5a9A5DA500FE7139d169cFe"
+      abi: ERC20
+      startBlock: 5200000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - System
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleEMetisMint
+      file: ./src/listeners.ts
+
+  - kind: ethereum/contract
+    name: seMetisMint
+    network: "metis-sepolia"
+    source:
+      address: "0xd11bB6839aF15d0d62F015d97467724c1f8f9489"
+      abi: ERC20
+      startBlock: 5200000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - System
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleSeMetisMint
+      file: ./src/listeners.ts
+
+  - kind: ethereum
+    name: Vesting
+    network: "metis-sepolia"
+    source:
+      abi: Vesting
+      address: "0x071E5B919B3108AffbB692A226F63783D789Da6A"
+      startBlock: 5200000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - System
+      abis:
+        - name: Vesting
+          file: ./abis/Vesting.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleEnkiStaked
+      file: ./src/listeners.ts
+
+  # - kind: ethereum
+  #   name: ENKIFaucet
+  #   network: "metis-sepolia"
+  #   source:
+  #     abi: ERC20
+  #     address: "0xa32d8902891B665939c1534283f1Bb7d9D283793"
+  #     startBlock: 5200000
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - User
+  #       - System
+  #     abis:
+  #       - name: ERC20
+  #         file: ./abis/ERC20.json
+  #     eventHandlers:
+  #       - event: Transfer(indexed address,indexed address,uint256)
+  #         handler: handleDrip
+  #     file: ./src/listeners.ts
+
+  # - kind: ethereum
+  #   name: MetisFaucet
+  #   network: "metis-sepolia"
+  #   source:
+  #     abi: ERC20
+  #     address: "0xDF5b62fa100b5f67C5a9A5DA500FE7139d169cFe"
+  #     startBlock: 5200000
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - User
+  #       - System
+  #     abis:
+  #       - name: ERC20
+  #         file: ./abis/ERC20.json
+  #     eventHandlers:
+  #       - event: Transfer(indexed address,indexed address,uint256)
+  #         handler: handleDrip
+  #     file: ./src/listeners.ts

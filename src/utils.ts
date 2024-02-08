@@ -54,6 +54,11 @@ export function getOrCreateUser(address: string, block: ethereum.Block) : User {
         user.spinsBought = ZERO
       
         user.adminPointsAdded = ZERO
+        user.botClaims = ZERO
+
+        user.enkiStakeEnki = ZERO
+        user.enkiStakeEMetis = ZERO
+        user.enkiStakeMetis = ZERO
     }
     return user;
 }
@@ -86,15 +91,22 @@ export function getOrCreateSystem() : System {
         sys.spins = ZERO
         sys.spinsBought = ZERO
         sys.adminPointsAdded = ZERO
+        
+        sys.latestBlock = ZERO
+
+        sys.enkiStakeEnki = ZERO
+        sys.enkiStakeEMetis = ZERO
+        sys.enkiStakeMetis = ZERO
     }
 
     return sys;
 }
 
-export function updateSys(action: string, gain: BigInt): void{
+export function updateSys(action: string, gain: BigInt, block: ethereum.Block): void{
     let sys = getOrCreateSystem()
     sys.actionCount = sys.actionCount.plus(ONE)
     sys.pointsEarned = sys.pointsEarned.plus(gain)
+    sys.latestBlock = block.number
 
     let val = sys.get(action)
     if (!val || val.kind == ValueKind.NULL) {

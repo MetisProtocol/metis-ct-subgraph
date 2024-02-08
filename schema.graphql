@@ -49,6 +49,14 @@ type User @entity {
   spinsBought: BigInt!
 
   adminPointsAdded: BigInt!
+
+  botClaims: BigInt!
+  
+  # enkiFaucetMetis: BigInt!
+  # enkiFaucetEnki: BigInt!
+  enkiStakeEnki: BigInt!
+  enkiStakeMetis: BigInt!
+  enkiStakeEMetis: BigInt!
 }
 
 type Pair @entity {
@@ -86,4 +94,12 @@ type System @entity {
   spins: BigInt!
   spinsBought: BigInt!
   adminPointsAdded: BigInt!
+
+  latestBlock: BigInt!
+    
+  # enkiFaucetMetis: BigInt!
+  # enkiFaucetEnki: BigInt!
+  enkiStakeEnki: BigInt!
+  enkiStakeMetis: BigInt!
+  enkiStakeEMetis: BigInt!
 }

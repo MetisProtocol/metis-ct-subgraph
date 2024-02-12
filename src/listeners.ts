@@ -4,7 +4,7 @@ import { Pair } from "./generated/schema";
 import { PairCreated } from "./generated/NetSwapNewLp/V2Factory";
 import { Mint, Swap } from "./generated/NetSwapSwap/V2Pair";
 import { Swap as TSwap, IncreasePosition } from "./generated/TethysPerp/TVault";
-import { ONE, getOrCreateUser, pow, updateSys } from "./utils";
+import { ONE, getOrCreateUser, pow, safeGain, updateSys } from "./utils";
 import { AddLiquidity } from "./generated/TethysTLP/TLPManager";
 import { TicketsPurchase } from "./generated/Midas/Midas";
 import { Subscription, Trade } from "./generated/LeagueTech/LeagueTech";
@@ -13,8 +13,6 @@ import { Swap as SwapHummusPool, Deposit } from "./generated/Hummus/HummusPool";
 import { SpinsBought, WheelSpin } from "./generated/ScoreKeeper/ScoreKeeper";
 import { Transfer } from "./generated/eMetisMint/ERC20";
 
-const DIVIDOR = BigInt.fromI32(4)
-const MULTIPLIER = BigInt.fromI32(3)
 
 export function isSeason1Over(event: ethereum.Event): boolean {
   return event.block.number.gt(BigInt.fromI64(5200000))
@@ -68,7 +66,7 @@ export function handleNetswapSwap(event: Swap): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let netswapSwapCnt = user.netswapSwap;
-  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, netswapSwapCnt)).div(pow(DIVIDOR, netswapSwapCnt))
+  let gain = safeGain(300, netswapSwapCnt)
   user.score = user.score.plus(gain)
   user.netswapSwap = user.netswapSwap.plus(ONE)
     
@@ -90,7 +88,7 @@ export function handleNetswapLiquidity(event: Mint): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let netswapLpCnt = user.netswapLp;
-  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, netswapLpCnt)).div(pow(DIVIDOR, netswapLpCnt))
+  let gain = safeGain(500, netswapLpCnt)
   user.score = user.score.plus(gain)
   user.netswapLp = user.netswapLp.plus(ONE)
 
@@ -107,7 +105,7 @@ export function handleTethysSwap(event: TSwap): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let tethysSwapCnt = user.tethysSwap;
-  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, tethysSwapCnt)).div(pow(DIVIDOR, tethysSwapCnt))
+  let gain = safeGain(300, tethysSwapCnt)
   user.score = user.score.plus(gain)
   user.tethysSwap = user.tethysSwap.plus(ONE)
   
@@ -124,7 +122,7 @@ export function handleTethysPerp(event: IncreasePosition): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let tethysPerpCnt = user.tethysPerp;
-  let gain = BigInt.fromI64(400).times(pow(MULTIPLIER, tethysPerpCnt)).div(pow(DIVIDOR, tethysPerpCnt))
+  let gain = safeGain(400, tethysPerpCnt)
   user.score = user.score.plus(gain)
   user.tethysPerp = user.tethysPerp.plus(ONE)
 
@@ -141,7 +139,7 @@ export function handleTethysTLP(event: AddLiquidity): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let tethysTLPCnt = user.tethysTLP;
-  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, tethysTLPCnt)).div(pow(DIVIDOR, tethysTLPCnt))
+  let gain = safeGain(500, tethysTLPCnt)
   user.score = user.score.plus(gain)
   user.tethysTLP = user.tethysTLP.plus(ONE)
 
@@ -158,7 +156,7 @@ export function handleLottery(event: TicketsPurchase): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let lotterCnt = user.midasLottery;
-  let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, lotterCnt)).div(pow(DIVIDOR, lotterCnt))
+  let gain = safeGain(1000, lotterCnt)
   user.score = user.score.plus(gain)
   user.midasLottery = user.midasLottery.plus(ONE)
   
@@ -175,7 +173,7 @@ export function handleSub(event: Subscription): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let leagueSubs = user.leagueSub;
-  let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, leagueSubs)).div(pow(DIVIDOR, leagueSubs))
+  let gain = safeGain(1000, leagueSubs)
   user.score = user.score.plus(gain)
   user.leagueSub = user.leagueSub.plus(ONE)
 
@@ -192,7 +190,7 @@ export function handleBuy(event: Trade): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let leagueBuys = user.leagueBuy;
-  let gain = BigInt.fromI64(1000).times(pow(MULTIPLIER, leagueBuys)).div(pow(DIVIDOR, leagueBuys))
+  let gain = safeGain(1000, leagueBuys)
   user.score = user.score.plus(gain)
   user.leagueBuy = user.leagueBuy.plus(ONE)
   updateSys("leagueBuy", gain, event.block)
@@ -208,7 +206,7 @@ export function handleHummusSwap(event: SwapHummusPool): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let humSwaps = user.hummusSwap;
-  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, humSwaps)).div(pow(DIVIDOR, humSwaps))
+  let gain = safeGain(300, humSwaps)
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
   updateSys("hummusSwap", gain, event.block)
@@ -223,7 +221,7 @@ export function handleHummusLp(event: Deposit): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let hummusLp = user.hummusLp;
-  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, hummusLp)).div(pow(DIVIDOR, hummusLp))
+  let gain = safeGain(500, hummusLp)
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
   updateSys("hummusLp", gain, event.block)
@@ -238,7 +236,7 @@ export function handleHummusVaultSwap(event: SwapHummusVault): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let humSwaps = user.hummusSwap;
-  let gain = BigInt.fromI64(300).times(pow(MULTIPLIER, humSwaps)).div(pow(DIVIDOR, humSwaps))
+  let gain = safeGain(300, humSwaps)
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
   updateSys("hummusSwap", gain, event.block)
@@ -253,7 +251,7 @@ export function handleHummusVaultLp(event: PoolBalanceChanged): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let hummusLp = user.hummusLp;
-  let gain = BigInt.fromI64(500).times(pow(MULTIPLIER, hummusLp)).div(pow(DIVIDOR, hummusLp))
+  let gain = safeGain(500, hummusLp)
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
   updateSys("hummusLp", gain, event.block)
@@ -285,7 +283,7 @@ export function handleBoughtSpins(event: SpinsBought): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let spinsBought = user.spinsBought;
-  let gain = BigInt.fromI64(100).times(pow(MULTIPLIER, spinsBought)).div(pow(DIVIDOR, spinsBought)).times(numSpins)
+  let gain = safeGain(100, spinsBought).times(numSpins)
   user.score = user.score.plus(gain)
   user.spinsBought = user.spinsBought.plus(ONE)
   updateSys("spinsBought", gain, event.block)
@@ -308,7 +306,7 @@ export function handleEMetisMint(event: Transfer): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let enkiStakeMetis = user.enkiStakeMetis;
-  let gain = BigInt.fromI64(1500).times(pow(MULTIPLIER, enkiStakeMetis)).div(pow(DIVIDOR, enkiStakeMetis))
+  let gain = safeGain(1500, enkiStakeMetis)
   user.score = user.score.plus(gain)
   user.enkiStakeMetis = user.enkiStakeMetis.plus(ONE)
   updateSys("enkiStakeMetis", gain, event.block)
@@ -326,7 +324,7 @@ export function handleSeMetisMint(event: Transfer): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let enkiStakeEMetis = user.enkiStakeEMetis;
-  let gain = BigInt.fromI64(1500).times(pow(MULTIPLIER, enkiStakeEMetis)).div(pow(DIVIDOR, enkiStakeEMetis))
+  let gain =safeGain(1500, enkiStakeEMetis)
   user.score = user.score.plus(gain)
   user.enkiStakeEMetis = user.enkiStakeEMetis.plus(ONE)
   updateSys("enkiStakeEMetis", gain, event.block)
@@ -339,7 +337,7 @@ export function handleEnkiStaked(event: SpinsBought): void {
   let user = getOrCreateUser(userAddress, event.block)
 
   let enkiStakeEnki = user.enkiStakeEnki;
-  let gain = BigInt.fromI64(1500).times(pow(MULTIPLIER, enkiStakeEnki)).div(pow(DIVIDOR, enkiStakeEnki))
+  let gain = safeGain(1500, enkiStakeEnki)
   user.score = user.score.plus(gain)
   user.enkiStakeEnki = user.enkiStakeEnki.plus(ONE)
   updateSys("enkiStakeEnki", gain, event.block)

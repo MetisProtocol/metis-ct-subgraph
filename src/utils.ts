@@ -4,6 +4,8 @@ import { System, User } from "./generated/schema";
 export const ONE = BigInt.fromI32(1)
 export const ZERO = BigInt.fromI32(0)
 
+export const DIVIDOR = BigInt.fromI32(4)
+export const MULTIPLIER = BigInt.fromI32(3)
 
 export function pow(base: BigInt, exponent: BigInt): BigInt {
     if (exponent.equals(ZERO)) return ONE; // Any number to the power of 0 is 1
@@ -115,6 +117,13 @@ export function updateSys(action: string, gain: BigInt, block: ethereum.Block): 
         sys.set(action, Value.fromBigInt(val.toBigInt().plus(ONE)));
     }
     sys.save()
+}
+
+export function safeGain(taskPts: i64, times: BigInt): BigInt {
+    if(times.gt(BigInt.fromI64(24))){
+        return ZERO
+    }
+    return BigInt.fromI64(taskPts).times(pow(MULTIPLIER, times)).div(pow(DIVIDOR, times))
 }
 
 // export function updateSys({

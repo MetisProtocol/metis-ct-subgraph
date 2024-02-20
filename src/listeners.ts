@@ -17,6 +17,9 @@ import { Transfer } from "./generated/eMetisMint/ERC20";
 export function isSeason1Over(event: ethereum.Event): boolean {
   return event.block.number.gt(BigInt.fromI64(5200000))
 }
+export function isSeason2Over(event: ethereum.Event): boolean {
+  return event.block.number.gt(BigInt.fromI64(11919000))
+}
 
 export function handleTokensDistributed(event: TokensDistributed): void {
   // if(isSeason1Over(event)){
@@ -69,6 +72,7 @@ export function handleNetswapSwap(event: Swap): void {
   let gain = safeGain(300, netswapSwapCnt)
   user.score = user.score.plus(gain)
   user.netswapSwap = user.netswapSwap.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
     
   updateSys("netswapSwap", gain, event.block)
 
@@ -91,6 +95,7 @@ export function handleNetswapLiquidity(event: Mint): void {
   let gain = safeGain(500, netswapLpCnt)
   user.score = user.score.plus(gain)
   user.netswapLp = user.netswapLp.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
 
   updateSys("netswapLp", gain, event.block)
 
@@ -108,6 +113,7 @@ export function handleTethysSwap(event: TSwap): void {
   let gain = safeGain(300, tethysSwapCnt)
   user.score = user.score.plus(gain)
   user.tethysSwap = user.tethysSwap.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
   
   updateSys("tethysSwap", gain, event.block)
 
@@ -125,6 +131,7 @@ export function handleTethysPerp(event: IncreasePosition): void {
   let gain = safeGain(400, tethysPerpCnt)
   user.score = user.score.plus(gain)
   user.tethysPerp = user.tethysPerp.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
 
   updateSys("tethysPerp", gain, event.block)
 
@@ -142,6 +149,7 @@ export function handleTethysTLP(event: AddLiquidity): void {
   let gain = safeGain(500, tethysTLPCnt)
   user.score = user.score.plus(gain)
   user.tethysTLP = user.tethysTLP.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
 
   updateSys("tethysTLP", gain, event.block)
 
@@ -159,6 +167,7 @@ export function handleLottery(event: TicketsPurchase): void {
   let gain = safeGain(1000, lotterCnt)
   user.score = user.score.plus(gain)
   user.midasLottery = user.midasLottery.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
   
   updateSys("midasLottery", gain, event.block)
 
@@ -176,6 +185,7 @@ export function handleSub(event: Subscription): void {
   let gain = safeGain(1000, leagueSubs)
   user.score = user.score.plus(gain)
   user.leagueSub = user.leagueSub.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
 
   updateSys("leagueSub", gain, event.block)
 
@@ -193,6 +203,8 @@ export function handleBuy(event: Trade): void {
   let gain = safeGain(1000, leagueBuys)
   user.score = user.score.plus(gain)
   user.leagueBuy = user.leagueBuy.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("leagueBuy", gain, event.block)
 
   user.save()
@@ -209,6 +221,8 @@ export function handleHummusSwap(event: SwapHummusPool): void {
   let gain = safeGain(300, humSwaps)
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("hummusSwap", gain, event.block)
 
   user.save()
@@ -224,6 +238,8 @@ export function handleHummusLp(event: Deposit): void {
   let gain = safeGain(500, hummusLp)
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("hummusLp", gain, event.block)
 
   user.save()
@@ -239,11 +255,14 @@ export function handleHummusVaultSwap(event: SwapHummusVault): void {
   let gain = safeGain(300, humSwaps)
   user.score = user.score.plus(gain)
   user.hummusSwap = user.hummusSwap.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+  
   updateSys("hummusSwap", gain, event.block)
 
   user.save()
 }
 export function handleHummusVaultLp(event: PoolBalanceChanged): void {
+  
   if(isSeason1Over(event)){
     return
   }
@@ -254,12 +273,17 @@ export function handleHummusVaultLp(event: PoolBalanceChanged): void {
   let gain = safeGain(500, hummusLp)
   user.score = user.score.plus(gain)
   user.hummusLp = user.hummusLp.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("hummusLp", gain, event.block)
 
   user.save()
 }
 
 export function handleWheelSpin(event: WheelSpin): void {
+  if(isSeason2Over(event)){
+    return
+  }
   let userAddress = event.params.user.toHexString()
   
   let points = event.params.pointsAdded
@@ -272,12 +296,17 @@ export function handleWheelSpin(event: WheelSpin): void {
   user.spinTokensEarned = user.spinTokensEarned.plus(tokens)
 
   user.spins = user.spins.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("spins", points, event.block)
 
   user.save()
 }
 
 export function handleBoughtSpins(event: SpinsBought): void {
+  if(isSeason2Over(event)){
+    return
+  }
   let numSpins = event.params.numSpins;
   let userAddress = event.params.user.toHexString();
   let user = getOrCreateUser(userAddress, event.block)
@@ -286,6 +315,8 @@ export function handleBoughtSpins(event: SpinsBought): void {
   let gain = safeGain(100, spinsBought).times(numSpins)
   user.score = user.score.plus(gain)
   user.spinsBought = user.spinsBought.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("spinsBought", gain, event.block)
 
   user.save()
@@ -309,12 +340,17 @@ export function handleEMetisMint(event: Transfer): void {
   let gain = safeGain(1500, enkiStakeMetis)
   user.score = user.score.plus(gain)
   user.enkiStakeMetis = user.enkiStakeMetis.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("enkiStakeMetis", gain, event.block)
 
   user.save()
 }
 
 export function handleSeMetisMint(event: Transfer): void {
+  if(isSeason2Over(event)){
+    return
+  }
   if (!event.params.from.equals(Address.zero())) {
       // only for mint
       return;
@@ -327,12 +363,17 @@ export function handleSeMetisMint(event: Transfer): void {
   let gain =safeGain(1500, enkiStakeEMetis)
   user.score = user.score.plus(gain)
   user.enkiStakeEMetis = user.enkiStakeEMetis.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("enkiStakeEMetis", gain, event.block)
 
   user.save()
 }
 
 export function handleEnkiStaked(event: SpinsBought): void {
+  if(isSeason2Over(event)){
+    return
+  }
   let userAddress = event.params.user.toHexString();
   let user = getOrCreateUser(userAddress, event.block)
 
@@ -340,6 +381,8 @@ export function handleEnkiStaked(event: SpinsBought): void {
   let gain = safeGain(1500, enkiStakeEnki)
   user.score = user.score.plus(gain)
   user.enkiStakeEnki = user.enkiStakeEnki.plus(ONE)
+  user.actionCount = user.actionCount.plus(ONE);
+
   updateSys("enkiStakeEnki", gain, event.block)
 
   user.save()

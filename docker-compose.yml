@@ -18,10 +18,10 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'andromeda:https://andromeda.metis.io/?owner=1088'
+      ethereum: 'metis-sepolia:https://sepolia.rpc.metisdevops.link/'
       GRAPH_LOG: info
   ipfs:
-    image: ipfs/go-ipfs:v0.12.1
+    image: ipfs/go-ipfs:v0.13.0
     container_name: graph-ipfs
     ports:
       # Swarm

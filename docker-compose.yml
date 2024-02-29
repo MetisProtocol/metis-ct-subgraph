@@ -1,7 +1,7 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node:v0.25.2
+    image: graphprotocol/graph-node:v0.26.0
     container_name: graph-node
     ports:
       - '8000:8000' # http graphql
@@ -18,15 +18,15 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'metis-sepolia:https://sepolia.rpc.metisdevops.link/'
+      ethereum: 'metis-sepolia:https://sepolia.metisdevops.link/'
       GRAPH_LOG: info
   ipfs:
-    image: ipfs/go-ipfs:v0.13.0
+    image: ipfs/go-ipfs:v0.12.1
     container_name: graph-ipfs
     ports:
       # Swarm
-      # - 4001:4001/tcp
-      # - 4001:4001/udp
+      - 4001:4001/tcp
+      - 4001:4001/udp
       - 5001:5001 # api
       - 8080:8080 # api gateway
     volumes:
